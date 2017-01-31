@@ -1,3 +1,4 @@
-databaseRename/data.json
-databaseRename/errors.log
+
 .idea/
+/data.json
+/errors.log
