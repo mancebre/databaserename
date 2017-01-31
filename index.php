@@ -104,11 +104,27 @@ function readDatabaseName()
         font-size: 26px;
         margin: 30px;
     }
+    #run-after-import {
+        position: absolute;
+        right: 0;
+        top: 15px;
+        border: 5px solid red;
+        width: 150px;
+        margin: 15px;
+        padding: 15px;
+        border-radius: 12px;
+        font-weight: 400;
+    }
 </style>
 
 <div id="loader"></div>
 
 <div class="select-database">
+
+    <div id="run-after-import">
+        Run this after database import:
+        <button onclick="emptyDataFile();">Run</button>
+    </div>
 
     <?php if($currentDatabases) {?>
         <div id="databases">
@@ -124,7 +140,7 @@ function readDatabaseName()
         <?php } ?>
     </select>
 
-    <button onclick="renameDatabase();">Import</button>
+    <button onclick="renameDatabase();">Rename</button>
 </div>
 
 <div id="result"></div>
@@ -207,6 +223,40 @@ function readDatabaseName()
 
         notice.style.display = 'none';
         select.style.display = 'block';
+    }
+    
+    function emptyDataFile() {
+
+        if(confirm("bla bla")) {
+
+            document.getElementById('loader').style.display = 'block';
+
+            var http = new XMLHttpRequest();
+            var url = "rename_database.php";
+            var params = "reset=" + true;
+            http.open("POST", url, true);
+
+            //Send the proper header information along with the request
+            http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+            http.onreadystatechange = function() {//Call a function when the state changes.
+                if(http.readyState == 4) {
+                    document.getElementById('loader').style.display = 'none';
+                }
+                if(http.readyState == 4 && http.status == 200) {
+//                    document.getElementById("result").innerHTML = this.responseText;
+                    alert(this.responseText);
+                    window.location.reload(false);
+                } else if(http.readyState == 4 && http.status != 200) {
+//                    document.getElementById("result").innerHTML = this.responseText;
+                    alert(this.responseText);
+                    console.log('ERROR', this);
+//                    window.location.reload(false);
+                }
+            };
+            http.send(params);
+
+        }
     }
 </script>
 

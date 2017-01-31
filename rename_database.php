@@ -21,6 +21,10 @@ if(isset($_POST['database'])) {
         init($database);
 //        sleep(30);
     }
+} elseif (isset($_POST['reset'])) {
+    emptyDataFile();
+    echo "system reset, you can now rename database";
+    exit;
 } else {
     http_response_code(404);
     exit;
@@ -128,6 +132,8 @@ function DropDatabases() {
         die('Could not connect: ' . mysql_error());
     }
 
+    mysql_query( "set foreign_key_checks=0", $conn );
+
     $sql = 'DROP DATABASE IF EXISTS guidel_drupal';
     $retval = mysql_query( $sql, $conn );
 
@@ -159,6 +165,8 @@ function DropDatabases() {
         plog('CREATE DATABASE fail');
         return false;
     }
+
+    mysql_query( "set foreign_key_checks=1", $conn );
 
     mysql_close($conn);
 
@@ -281,4 +289,13 @@ function copyDatabase($drupal, $moodle)
 
     $command = 'mysqldump -uguidel -pGroml75 -v '.$moodle.' | mysql -uguidel -pGroml75 -D guidel_moodle';
     exec($command, $result, $output);
+}
+
+function emptyDataFile()
+{
+    $f = @fopen("data.json", "r+");
+    if ($f !== false) {
+        ftruncate($f, 0);
+        fclose($f);
+    }
 }
