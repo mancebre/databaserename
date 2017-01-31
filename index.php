@@ -84,22 +84,39 @@ function readDatabaseName()
         opacity: 0.7;
         background: #333 url("loading.gif") no-repeat center center; }
     div {
-        font-size: 26px;
         font-weight: 600;
         text-align: center;
+    }
+    .select-database {
+        display: none;
+        font-size: 26px;
+    }
+    .notice {
+        border: 5px solid red;
+        padding: 10px;
+        margin: 50px 200px;
+        color: red;
+        font-size: 45px;
+        border-radius: 10px;
+    }
+    #notice-ok {
+        color: black;
+        font-size: 26px;
+        margin: 30px;
     }
 </style>
 
 <div id="loader"></div>
 
-<?php if($currentDatabases) {?>
-    <div id="databases">
-        <p>Current drupal database is: <?php echo $drupal?></p>
-        <p>Current moodle database is: <?php echo $moodle?></p>
-    </div>
-<?php } ?>
+<div class="select-database">
 
-<div>
+    <?php if($currentDatabases) {?>
+        <div id="databases">
+            <p>Current drupal database is: <?php echo $drupal?></p>
+            <p>Current moodle database is: <?php echo $moodle?></p>
+        </div>
+    <?php } ?>
+
     <select id="database">
         <option value="0">Select database</option>
         <?php foreach ($databases as $base) { ?>
@@ -111,6 +128,13 @@ function readDatabaseName()
 </div>
 
 <div id="result"></div>
+
+<div class="notice">
+    Before running database rename use "DB Migration Tool" to revert database to version 0!
+    <div>
+        <button onclick="closeNotice();" id="notice-ok">OK</button>
+    </div>
+</div>
 
 <script>
     /**
@@ -175,6 +199,14 @@ function readDatabaseName()
         if(RequestTime) {
             console.log('Last rename execution time: ', JSON.parse(RequestTime));
         }
+    }
+
+    function closeNotice() {
+        var notice = document.getElementsByClassName('notice')[0];
+        var select = document.getElementsByClassName('select-database')[0];
+
+        notice.style.display = 'none';
+        select.style.display = 'block';
     }
 </script>
 
